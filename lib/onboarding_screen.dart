@@ -24,8 +24,8 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Welcome to the App')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
+        // Simplified layout for debugging
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -33,13 +33,6 @@ class OnboardingScreen extends StatelessWidget {
               'Welcome to the European Countries app!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'This app provides information about European countries. '
-              'You can sort countries by name, population, or capital.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
             ElevatedButton(

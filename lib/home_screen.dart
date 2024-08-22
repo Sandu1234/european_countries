@@ -10,7 +10,6 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.apiClient});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -18,16 +17,15 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<CountryModel>> _countriesFuture;
   String _errorMessage = '';
   String _sortCriteria = 'Name';
-  String _instructionMessage = ''; // State variable for the instruction message
+  String _instructionMessage = '';
 
   @override
   void initState() {
     super.initState();
     _countriesFuture = _fetchCountries();
-    _updateInstructionMessage(); // Initialize the message based on default sort criteria
+    _updateInstructionMessage();
   }
 
-  // Method to update the instruction message based on the selected sorting criteria
   void _updateInstructionMessage() {
     setState(() {
       switch (_sortCriteria) {
@@ -35,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _instructionMessage = 'Sorted alphabetically by name.';
           break;
         case 'Population':
-          _instructionMessage = 'Sorted by population, highest to lowest.';
+          _instructionMessage = 'Sorted by population, lowest to highest.';
           break;
         case 'Capital':
           _instructionMessage = 'Sorted alphabetically by capital city.';
@@ -135,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             _sortCriteria = newValue;
                           });
-                          _updateInstructionMessage(); // Update the message when sort criteria changes
+                          _updateInstructionMessage();
                         }
                       },
                       items: <String>['Name', 'Population', 'Capital']

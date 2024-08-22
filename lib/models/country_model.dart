@@ -8,7 +8,7 @@ class CountryModel {
   final List<String> capital;
   final Flags flags;
   final String region;
-  final Map<String, String> languages;
+  final Map<String, String>? languages; // Nullable field
   final int population;
 
   CountryModel({
@@ -16,34 +16,26 @@ class CountryModel {
     required this.capital,
     required this.flags,
     required this.region,
-    required this.languages,
+    this.languages, // Nullable field
     required this.population,
   });
 
   factory CountryModel.fromJson(Map<String, dynamic> json) =>
       _$CountryModelFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'name': name.toJson(), // Explicitly call toJson() on Name
-        'capital': capital,
-        'flags': flags.toJson(), // Explicitly call toJson() on Flags
-        'region': region,
-        'languages': languages,
-        'population': population,
-      };
+  Map<String, dynamic> toJson() => _$CountryModelToJson(this);
 }
 
 @JsonSerializable()
 class Name {
   final String common;
-  final String official;
+  final String? official; // Nullable field
 
-  Name({required this.common, required this.official});
+  Name({required this.common, this.official}); // Nullable field
 
-  factory Name.fromJson(Map<String, dynamic> json) =>
-      _$NameFromJson(json); // This is a generated method
-  Map<String, dynamic> toJson() =>
-      _$NameToJson(this); // This is a generated method
+  factory Name.fromJson(Map<String, dynamic> json) => _$NameFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NameToJson(this);
 }
 
 @JsonSerializable()
@@ -54,8 +46,7 @@ class Flags {
 
   Flags({required this.png, required this.svg, this.alt});
 
-  factory Flags.fromJson(Map<String, dynamic> json) =>
-      _$FlagsFromJson(json); // This is a generated method
-  Map<String, dynamic> toJson() =>
-      _$FlagsToJson(this); // This is a generated method
+  factory Flags.fromJson(Map<String, dynamic> json) => _$FlagsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FlagsToJson(this);
 }

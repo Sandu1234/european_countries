@@ -1,73 +1,69 @@
-import 'package:european_countries/models/country_model.dart';
+import 'package:dio/dio.dart';
 import 'package:european_countries/services/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dio/dio.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:european_countries/models/country_model.dart';
+import 'api_client_test.mocks.dart';
 
-import 'home_screen_test.dart';
-
-@GenerateMocks([ApiClient])
+// Generate the mock file
+@GenerateMocks([Dio])
 void main() {
-  late MockApiClient mockApiClient;
+  late ApiClient apiClient;
+  late MockDio mockDio;
 
   setUp(() {
-    // Initialize the mock instance before each test
-    mockApiClient = MockApiClient();
+    mockDio = MockDio();
+    apiClient = ApiClient(mockDio);
+
+    // Stub the Dio options getter
+    when(mockDio.options)
+        .thenReturn(BaseOptions(baseUrl: 'https://restcountries.com/v3.1/'));
   });
 
-  test('getEuropeanCountries returns a list of countries', () async {
-    // Arrange
-    final countries = [
-      CountryModel(
-        name: Name(common: 'France', official: 'French Republic'),
-        capital: ['Paris'],
-        flags: Flags(
-          png: 'https://flagcdn.com/w320/fr.png',
-          svg: 'https://flagcdn.com/fr.svg',
-        ),
-        region: 'Europe',
-        languages: {'fra': 'French'},
-        population: 67081000,
-      ),
-    ];
-
-    // Set up the mock to return a Future with countries list
-    when(mockApiClient.getEuropeanCountries())
-        .thenAnswer((_) async => countries);
-
-    // Act
-    final result = await mockApiClient.getEuropeanCountries();
-
-    // Assert
-    expect(result, isA<List<CountryModel>>());
-    expect(result.first.name.common, 'France');
-  });
-
-  test('getEuropeanCountries handles DioException', () async {
-    // Arrange
-    when(mockApiClient.getEuropeanCountries()).thenThrow(
-      DioException(
+  group('ApiClient', () {
+    test('getEuropeanCountries returns a list of countries', () async {
+      // Arrange
+      final mockResponse = Response(
+        data: [
+          {
+            "name": {"common": "France", "official": "French Republic"},
+            "capital": ["Paris"],
+            "flags": {
+              "png": "https://flagcdn.com/w320/fr.png",
+              "svg": "https://flagcdn.com/w320/fr.svg",
+            },
+            "region": "Europe",
+            "languages": {"fra": "French"},
+            "population": 67081000
+          },
+        ],
         requestOptions: RequestOptions(path: ''),
-        error: 'Error',
-        type: DioExceptionType.connectionTimeout, // Use an appropriate type
-      ),
-    );
+      );
 
-    // Act & Assert
-    expect(mockApiClient.getEuropeanCountries(), throwsA(isA<DioException>()));
-  });
+      when(mockDio.fetch<List<dynamic>>(any))
+          .thenAnswer((_) async => mockResponse);
 
-  test('getEuropeanCountries returns empty list when no countries found',
-      () async {
-    // Arrange
-    when(mockApiClient.getEuropeanCountries()).thenAnswer((_) async => []);
+      // Act
+      final countries = await apiClient.getEuropeanCountries();
 
-    // Act
-    final result = await mockApiClient.getEuropeanCountries();
+      // Assert
+      expect(countries, isA<List<CountryModel>>());
+      expect(countries.length, 1);
+      expect(countries[0].name.common,
+          "France"); // Updated to check the 'common' field of the 'Name' object
+    });
 
-    // Assert
-    expect(result, isA<List<CountryModel>>());
-    expect(result, isEmpty);
+    test('getEuropeanCountries throws an error on failure', () async {
+      // Arrange
+      when(mockDio.fetch<List<dynamic>>(any)).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ''),
+        error: 'Something went wrong',
+      ));
+
+      // Act & Assert
+      expect(() async => await apiClient.getEuropeanCountries(),
+          throwsA(isA<DioError>()));
+    });
   });
 }

@@ -23,7 +23,8 @@ void main() {
       expect(country.capital.first, 'Paris');
       expect(country.flags.png, 'https://flagcdn.com/w320/fr.png');
       expect(country.region, 'Europe');
-      expect(country.languages['fra'], 'French');
+      expect(country.languages?['fra'],
+          'French'); // Use ? to safely access languages
       expect(country.population, 67081000);
     });
 

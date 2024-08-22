@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class TestableNetworkImage extends StatelessWidget {
   final String url;
 
-  TestableNetworkImage({required this.url});
+  const TestableNetworkImage({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +41,15 @@ void main() {
       home: Scaffold(
         body: Column(
           children: [
-            Text(country.name.official),
-            Text(country.capital.first),
+            Text(
+                country.name.official ?? 'Unknown Official Name'), // Null check
+            Text(country.capital.isNotEmpty
+                ? country.capital.first
+                : 'Unknown Capital'), // Null and empty check
             Text(country.population.toString()),
-            Text(country.region),
-            Text(country.languages['fra']!),
-            TestableNetworkImage(url: country.flags.png), // Placeholder
+            Text(country.region), // Null check
+            Text(country.languages?['fra'] ?? 'Unknown Language'), // Null check
+            TestableNetworkImage(url: country.flags.png), // Null check
           ],
         ),
       ),

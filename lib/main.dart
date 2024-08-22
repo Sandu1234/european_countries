@@ -14,7 +14,10 @@ class MyApp extends StatelessWidget {
 
   Future<bool> _isOnboardingComplete() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('onboarding_complete') ?? false;
+    bool completed = prefs.getBool('onboarding_complete') ?? false;
+    // ignore: avoid_print
+    print('Onboarding completed: $completed');
+    return false; // Force the onboarding screen to display for testing
   }
 
   @override

@@ -12,7 +12,9 @@ CountryModel _$CountryModelFromJson(Map<String, dynamic> json) => CountryModel(
           (json['capital'] as List<dynamic>).map((e) => e as String).toList(),
       flags: Flags.fromJson(json['flags'] as Map<String, dynamic>),
       region: json['region'] as String,
-      languages: Map<String, String>.from(json['languages'] as Map),
+      languages: (json['languages'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
       population: (json['population'] as num).toInt(),
     );
 
@@ -28,7 +30,7 @@ Map<String, dynamic> _$CountryModelToJson(CountryModel instance) =>
 
 Name _$NameFromJson(Map<String, dynamic> json) => Name(
       common: json['common'] as String,
-      official: json['official'] as String,
+      official: json['official'] as String?,
     );
 
 Map<String, dynamic> _$NameToJson(Name instance) => <String, dynamic>{
